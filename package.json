@@ -1,0 +1,64 @@
+{
+  "name": "picobot",
+  "version": "0.0.1",
+  "description": "personal assistant",
+  "keywords": [
+    "telegram",
+    "bot",
+    "assistant"
+  ],
+  "main": "dist/server.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel-register",
+    "start": "export NTBA_FIX_319=any_value&& nodemon --trace-deprecation src/server.js --exec babel-node",
+    "debug": "export NTBA_FIX_319=any_value&& node src/server.js",
+    "build": "export NTBA_FIX_319=any_value && export NODE_ENV=production&& babel --ignore node_modules,state src -d dist",
+    "serve": "export NTBA_FIX_319=any_value && export NODE_ENV=production&& node dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thebix/picobot.git"
+  },
+  "author": "Paul Byron",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/thebix/picobot/issues"
+  },
+  "homepage": "https://github.com/thebix/picobot#readme",
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-env": "1.6.1",
+    "babel-preset-stage-2": "6.24.1",
+    "eslint": "4.19.1",
+    "eslint-config-airbnb": "16.1.0",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-plugin-import": "2.11.0",
+    "eslint-plugin-jsx-a11y": "6.0.3",
+    "eslint-plugin-react": "7.7.0",
+    "forever": "0.15.3",
+    "mocha": "5.1.1",
+    "nodemon": "1.17.3"
+  },
+  "dependencies": {
+    "jsonfile": "4.0.0",
+    "node-telegram-bot-api": "0.30.0",
+    "babel-register": "6.26.0",
+    "rxjs": "6.0.0",
+    "rxjs-compat": "6.0.0",
+    "rwlock": "5.0.0",
+    "node-cleanup": "2.1.2",
+    "fast-csv": "2.4.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">= 0.6.0",
+    "npm": ">= 1.0.0"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ],
+    "sourceMaps": true,
+    "retainLines": true
+  }
+}

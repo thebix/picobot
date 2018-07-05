@@ -1,0 +1,3 @@
+{
+  "ignore": ["res/*", "logs/*", "state/*", "state2/*"]
+}
