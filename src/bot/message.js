@@ -3,6 +3,31 @@
 export const USER_ID_UNUSED = 'userId_unused'
 
 /*
+ *   COMMON
+ */
+export class MessageFile {
+    constructor(file) {
+        this.id = file.id
+        this.fileUrl = file.fileUrl
+    }
+    static createFromTelegramPhotoArray(photos) {
+        if (!photos || !(photos.length > 0)) {
+            return null
+        }
+        const filePathItems = photos.filter(file => file.file_path)
+        let filePath = ''
+        if (filePathItems && filePathItems.length > 1) {
+            filePath = filePathItems.sort((item1, item2) => item2.file_size - item1.file_size)[0].file_path
+        }
+        const fileBig = photos.sort((item1, item2) => item2.file_size - item1.file_size)[0]
+        return new MessageFile({
+            id: fileBig.file_id,
+            fileUrl: filePath || undefined
+        })
+    }
+}
+
+/*
  *   FROM USER
  */
 export default class UserMessage {
@@ -12,6 +37,7 @@ export default class UserMessage {
         this.text = msg.text
         this.user = msg.user
         this.chat = msg.chat
+        this.photo = msg.photo
     }
 
     static createFromTelegramMessage(msg) {
@@ -84,7 +110,9 @@ export default class UserMessage {
         })
     }
     static createFromTelegramPhoto(msg) {
-        return this.createFromTelegramMessage(msg)
+        const telegramMessage = this.createFromTelegramMessage(msg)
+        telegramMessage.photo = MessageFile.createFromTelegramPhotoArray(msg.photo)
+        return telegramMessage
     }
 }
 

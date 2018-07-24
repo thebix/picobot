@@ -1,6 +1,6 @@
 import TelegramBot from 'node-telegram-bot-api'
 import { fromEvent, of } from 'rxjs'
-import { map, tap, catchError } from 'rxjs/operators'
+import { map, tap, catchError, switchMap } from 'rxjs/operators'
 import { fromPromise } from 'rxjs/observable/fromPromise'
 
 import { log, logLevel } from '../logger'
@@ -59,7 +59,17 @@ export default class Telegram {
     }
     userImage() {
         return fromEvent(this.bot, 'photo')
-            .pipe(map(msg => UserMessage.createFromTelegramPhoto(msg[0])))
+            .pipe(switchMap(msg => {
+                const userMessage = UserMessage.createFromTelegramPhoto(msg[0])
+                if (!userMessage.photo.fileUrl) {
+                    return fromPromise(this.bot.getFile(userMessage.photo.id))
+                        .pipe(map(file => {
+                            userMessage.photo.fileUrl = file.file_path
+                            return userMessage
+                        }))
+                }
+                return of(userMessage)
+            }))
     }
     userActions() {
         return fromEvent(this.bot, 'callback_query')
