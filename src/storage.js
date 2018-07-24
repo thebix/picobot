@@ -97,20 +97,26 @@ class Storage {
             this.storage = {}
         return this.storage
     }
-    getKeys(id = undefined) {
-        const storageById = this.getStorage(id)
-        return of(Object.keys(storageById))
+    get(field, id = undefined) {
+        return this.getStorage(id)[field]
     }
-    getItem(field, id = undefined) {
-        return of(this.getStorage(id)[field])
-    }
-    getItems(fieldsArray = [], id = undefined) {
+    getMany(fieldsArray = [], id = undefined) {
         const result = {}
         const storageById = this.getStorage(id)
         fieldsArray.forEach(field => {
             result[field] = storageById[field]
         })
-        return of(result)
+        return result
+    }
+    getKeys(id = undefined) {
+        const storageById = this.getStorage(id)
+        return of(Object.keys(storageById))
+    }
+    getItem(field, id = undefined) {
+        return of(this.get(field, id))
+    }
+    getItems(fieldsArray = [], id = undefined) {
+        return of(this.getMany(fieldsArray, id))
     }
     updateItem(fieldName, item, id = undefined) {
         const storageById = this.getStorage(id)
@@ -194,6 +200,18 @@ class Storage {
 class ChatsState extends Storage {
     constructor(dirStorage) {
         super(dirStorage, 'state.json')
+    }
+    get(field, stateId) {
+        const chat = super.get(stateId)
+        return chat ? chat[field] : undefined
+    }
+    getMany(fieldsArray = [], stateId) {
+        const chat = super.get(stateId) || {}
+        const result = {}
+        fieldsArray.forEach(field => {
+            result[field] = chat[field]
+        })
+        return result
     }
     getItem(field, stateId) {
         return super.getItem(stateId)
