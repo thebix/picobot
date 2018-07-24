@@ -81,7 +81,8 @@ export default () => {
         merge(
             // getWordsToAskObservable(),
             // getCommandForStatsDailyObservable(),
-            telegram.userText()
+            telegram.userText(),
+            telegram.userImage()
         ).pipe(
             subscribeOn(asapScheduler),
             mergeMap(mapUserMessageToBotMessages),
@@ -96,8 +97,11 @@ export default () => {
 
     // wordsIntervalTimer.start()
     // dailyIntervalTimer.start()
-    return merge(userTextObservalbe, userActionsObservable)
-        .pipe(catchError(err => {
-            log(err, logLevel.ERROR)
-        }))
+    return lib.fs.mkDirIfNotExists(`${config.dirStorage}files`)
+        .pipe(
+            switchMap(() => merge(userTextObservalbe, userActionsObservable)),
+            catchError(err => {
+                log(err, logLevel.ERROR)
+            })
+        )
 }
